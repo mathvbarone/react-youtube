@@ -9,9 +9,16 @@ class App extends React.Component {
 
     state = { videos: [], selectedVideo: null };
 
+    componentDidMount() {
+        this.onTermSubmit('reactjs');
+    }
+
     onTermSubmit = async term => {
         const data = await getYoutubeVideos(term);
-        return this.setState({ videos: data.items });
+        return this.setState({
+            videos: data.items,
+            selectedVideo: data.items[0]
+        });
     };
 
     onVideoSelect = video => {
