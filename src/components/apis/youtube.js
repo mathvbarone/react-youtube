@@ -8,8 +8,4 @@ export const getYoutubeVideos = async term => {
     catch (err) {
         console.log(err);
     }
-}
-
-
-
-
+};
