@@ -3,23 +3,29 @@ import SearchBar from "./SearchBar";
 import { getYoutubeVideos } from "./apis/youtube";
 import VideoList from "./VideoList";
 import VideoDetail from "./VideoDetail";
+import debounce from 'lodash.debounce';
 
 
 class App extends React.Component {
 
     state = { videos: [], selectedVideo: null };
 
+
     componentDidMount() {
         this.onTermSubmit('reactjs');
     }
 
+
     onTermSubmit = async term => {
-        const data = await getYoutubeVideos(term);
-        return this.setState({
-            videos: data.items,
-            selectedVideo: data.items[0]
-        });
+        if (term) {
+            const data = await getYoutubeVideos(term);
+            return this.setState({
+                videos: data.items,
+                selectedVideo: data.items[0]
+            });
+        }
     };
+
 
     onVideoSelect = video => {
         this.setState({ selectedVideo: video });
@@ -27,20 +33,22 @@ class App extends React.Component {
 
 
     render() {
+        const videoSearch = debounce(term => this.onTermSubmit(term), 1000);
+
         return (
-            <div className="ui container" style={{ marginTop: '20px' }}>
-                <SearchBar onFormSubmit={this.onTermSubmit} />
-                <div className="ui stackable grid">
-                    <div className="ui row">
-                        <div className="eleven wide column">
+            <section className="ui container" style={{ marginTop: '20px' }}>
+                <SearchBar onInputChange={videoSearch} />
+                <section className="ui stackable grid">
+                    <section className="ui row">
+                        <section className="eleven wide column">
                             <VideoDetail video={this.state.selectedVideo} />
-                        </div>
-                        <div className="five wide column">
+                        </section>
+                        <aside className="five wide column">
                             <VideoList onVideoSelect={this.onVideoSelect} videos={this.state.videos} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </aside>
+                    </section>
+                </section>
+            </section>
         );
     }
 }
